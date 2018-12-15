@@ -25,6 +25,29 @@
     <!-- Scripts -->
     <script src="js/bootstrap.min.js"></script>
     <script>
+        $(document).ready(function(){
+            $('.btn-add').click(function(){
+                var product_id = $(this).attr("id");
+                var product_name = $('#TenSP'+product_id+'').val();
+                var product_price = $('#GiaDonVi'+product_id+'').val();
+                var product_image = $('#HinhDaiDien'+product_id+'').val();
+                var product_quantity = 1;
+                var action = "add";
+                if(product_quantity > 0)
+                {
+                    $.ajax({
+                        url:"action.php",
+                        method:"POST",
+                        data:{MaSP:product_id, TenSP:product_name, GiaDonVi:product_price, SoLuong:product_quantity, action:action, HinhDaiDien:product_image},
+                        success:function(data)
+                        {
+                            alert("Item has been Added into Cart");
+                        }
+                    });
+                }	
+	        });
+        })
+    
     </script>
 </head>
 <body>
@@ -102,16 +125,20 @@
                         <div class="col-md-12 product-list">
                             <div class="row content-product-list">
                                 <?php
-                                    while ($row = $result->fetch_assoc()){
-                                        $imagelinks = explode(" , ",$row["CacHinhAnh"]);
+                                    while ($product = $result->fetch_assoc()){
+                                        $imagelinks = explode(" , ",$product["CacHinhAnh"]);
                                 ?>
                                 <div class="col-sm-3 col-xs-12 padding-none col-fix20 card-index">
-                                    <a href="product-detail.php?MaSP=<?php echo $row["MaSP"]; ?>"><img class="card-img-top" src="<?php echo $imagelinks[0]; ?>"></a>
+                                    <a href="product-detail.php?MaSP=<?php echo $product["MaSP"]; ?>"><img class="card-img-top" src="<?php echo $imagelinks[0]; ?>"></a>
                                     <div class="card-body">
-                                        <h4 class="card-title-gear"><?php echo $row["TenSP"]; ?></h4>
+                                        <h4 class="card-title-gear"><?php echo $product["TenSP"]; ?></h4>
                                         <p class="card-text"> </p>
-                                        <h5><?php echo $row["GiaDonVi"]; ?></h5>
-                                        <a href="#" class="btn btn-outline-secondary">Add to cart </a>
+                                        <h5><?php echo $product["GiaDonVi"]; ?></h5>
+                                        <a href="" class="btn btn-secondary btn-sm btn-add" id="<?php echo $product['MaSP']?>">Add to cart
+                                            <input type="hidden" name="TenSP" id="TenSP<?php echo $product['MaSP']; ?>" value="<?php echo $product["TenSP"]; ?>">
+                                            <input type="hidden" name="GiaDonVi" id="GiaDonVi<?php echo $product['MaSP']; ?>" value="<?php echo $product["GiaDonVi"]; ?>">
+                                            <input type="hidden" name="HinhDaiDien" id="HinhDaiDien<?php echo $product['MaSP']; ?>" value="<?php echo $imagelinks[0]; ?>">
+                                        </a>
                                     </div>
                                 </div>>
                                 <?php
